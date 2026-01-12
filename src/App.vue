@@ -82,13 +82,13 @@ import type { FormInstance, FormRules } from "element-plus";
 
 // 表单数据
 const form = reactive({
-  path: "D:/lnyiyao/sass/sass-patient",
+  path: "",
   platform: "mp-weixin",
-  project: "sass-patient",
-  appid: "wx920ecad45be51577",
-  description: "测试",
-  version: "2.3.1",
-  privatekey: "D:/lnyiyao/sass/sass-patient/微信小程序ci上传密钥/private.wx920ecad45be51577.key",
+  project: "",
+  appid: "",
+  description: "",
+  version: "",
+  privatekey: "",
   robot: 1,
 });
 

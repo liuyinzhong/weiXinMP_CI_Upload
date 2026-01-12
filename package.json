@@ -4,7 +4,7 @@
   "description": "微信小程序 CI 上传工具",
   "main": "dist/main.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 5173",
     "build": "tsc && vite build && tsc -p tsconfig.electron.json",
     "preview": "vite preview",
     "electron:dev": "tsc -p tsconfig.electron.json && electron dist/electron/main.js",

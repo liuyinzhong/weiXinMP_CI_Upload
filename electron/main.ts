@@ -9,7 +9,7 @@ let mainWindow: BrowserWindow | null = null;
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1000,
-    height: 600,
+    height: 800,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -22,7 +22,7 @@ function createWindow() {
   if (app.isPackaged) {
     mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
   } else {
-    mainWindow.loadURL("http://localhost:5175");
+    mainWindow.loadURL("http://localhost:5173");
   }
 
   // 打开开发者工具（可选）
@@ -43,17 +43,20 @@ ipcMain.on("execute-command", (event, command) => {
   if (child.stdout) {
     child.stdout.on("data", (data) => {
       try {
-        // 尝试用 GBK 解码（Windows 命令行默认编码）
-        const output = iconv.decode(data, "gbk");
-        event.sender.send("command-output", output);
-      } catch (error) {
-        // 如果失败，尝试用 UTF-8 解码
-        try {
-          const output = data.toString("utf8");
-          event.sender.send("command-output", output);
-        } catch (error) {
-          event.sender.send("command-output", data.toString("binary"));
+        // 先尝试 UTF-8 解码（现代命令行工具通常使用 UTF-8）
+        const utf8Output = data.toString("utf8");
+        // 检查是否有明显的乱码特征
+        if (!/[\u4e00-\u9fa5]/.test(utf8Output) || /�/.test(utf8Output)) {
+          // 如果没有中文字符或者有乱码标记，尝试 GBK 解码
+          const gbkOutput = iconv.decode(data, "gbk");
+          event.sender.send("command-output", gbkOutput);
+        } else {
+          // UTF-8 解码成功，直接使用
+          event.sender.send("command-output", utf8Output);
         }
+      } catch (error) {
+        // 如果所有解码尝试都失败，使用 binary 格式
+        event.sender.send("command-output", data.toString("binary"));
       }
     });
   }
@@ -62,17 +65,20 @@ ipcMain.on("execute-command", (event, command) => {
   if (child.stderr) {
     child.stderr.on("data", (data) => {
       try {
-        // 尝试用 GBK 解码（Windows 命令行默认编码）
-        const output = iconv.decode(data, "gbk");
-        event.sender.send("command-output", output);
-      } catch (error) {
-        // 如果失败，尝试用 UTF-8 解码
-        try {
-          const output = data.toString("utf8");
-          event.sender.send("command-output", output);
-        } catch (error) {
-          event.sender.send("command-output", data.toString("binary"));
+        // 先尝试 UTF-8 解码（现代命令行工具通常使用 UTF-8）
+        const utf8Output = data.toString("utf8");
+        // 检查是否有明显的乱码特征
+        if (!/[\u4e00-\u9fa5]/.test(utf8Output) || /�/.test(utf8Output)) {
+          // 如果没有中文字符或者有乱码标记，尝试 GBK 解码
+          const gbkOutput = iconv.decode(data, "gbk");
+          event.sender.send("command-output", gbkOutput);
+        } else {
+          // UTF-8 解码成功，直接使用
+          event.sender.send("command-output", utf8Output);
         }
+      } catch (error) {
+        // 如果所有解码尝试都失败，使用 binary 格式
+        event.sender.send("command-output", data.toString("binary"));
       }
     });
   }

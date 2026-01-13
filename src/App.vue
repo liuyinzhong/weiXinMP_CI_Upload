@@ -11,7 +11,7 @@ import { ref, onMounted } from "vue";
 import upload from "./components/upload.vue";
 
 import type { TabPaneName } from "element-plus";
-import { ElMessageBox } from "element-plus";
+import { ElMessageBox, ElMessage } from "element-plus";
 
 const editableTabsValue = ref("2");
 const editableTabs = ref<any>([]);
@@ -50,6 +50,11 @@ const handleTabsEdit = (targetName: TabPaneName | undefined, action: "remove" | 
 };
 
 const addTab = (value: string) => {
+  if (editableTabs.value.find((tab: any) => tab.name === value)) {
+    ElMessage.error("已存在相同名称的选项卡");
+    return;
+  }
+
   editableTabs.value.push({
     title: value,
     name: value,

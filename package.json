@@ -5,10 +5,9 @@
   "main": "dist/electron/main.js",
   "scripts": {
     "dev": "vite --port 5173",
-    "build": "tsc && vite build && tsc -p tsconfig.electron.json",
+    "build": "tsc && vite build && tsc -p tsconfig.electron.json && electron-builder",
     "preview": "vite preview",
     "electron:dev": "tsc -p tsconfig.electron.json && electron dist/electron/main.js",
-    "electron:build": "electron-builder",
     "start": "concurrently \"pnpm run dev\" \"sleep 2 && pnpm run electron:dev\""
   },
   "build": {

@@ -61,7 +61,7 @@
                   <el-button style="width: 100%" type="success" @click="submitForm" :loading="loading">{{ CurrentBranch }}分支发布体验</el-button>
                 </el-col>
                 <el-col :span="12">
-                  <el-button style="width: 100%" @click="resetForm">重置</el-button>
+                  <el-button style="width: 100%" @click="resetForm()">重置</el-button>
                 </el-col>
                 <el-col :span="12">
                   <el-button style="width: 100%" @click="showDialog">教程</el-button>
@@ -71,8 +71,9 @@
           </el-form>
         </el-col>
         <el-col :span="12">
-          <el-scrollbar ref="scrollbarRef" height="400px">
-            <pre style="background-color: #f5f7fa; padding: 10px; white-space: pre-wrap; word-wrap: break-word">{{ executionResult }}</pre>
+          <el-button style="width: 100%" @click="clearResult">清空结果</el-button>
+          <el-scrollbar ref="scrollbarRef" height="450px">
+            <pre style="background-color: #f5f7fa; padding: 0 10px; min-height: 450px; white-space: pre-wrap; word-wrap: break-word">{{ executionResult }}</pre>
           </el-scrollbar>
         </el-col>
       </el-row>
@@ -207,7 +208,7 @@ const submitFormV2 = async (type: number) => {
 
       if (type === 0) {
         executionResult.value += "\n***在test分支上提交体验版\n";
-        await submitWx();
+        await submitWx(false);
         executionResult.value += "\n***已提交\n";
       }
 
@@ -222,8 +223,12 @@ const submitFormV2 = async (type: number) => {
   });
 };
 
-const submitWx = async () => {
+const submitWx = async (isClearResult: boolean) => {
   return new Promise(async (resolve, reject) => {
+    if (isClearResult) {
+      clearResult();
+    }
+
     // 生成命令
     const command = `cli publish --platform ${form.platform} --project ${form.project} --upload true --appid ${form.appid} --description ${form.description} --version ${form.version} --privatekey ${form.privatekey} --robot ${form.robot}`;
 
@@ -257,16 +262,21 @@ const submitForm = async () => {
       executionResult.value += "\n表单验证失败";
       return;
     }
-    submitWx();
+    submitWx(true);
   });
 };
 
 // 重置表单
-const resetForm = () => {
+const resetForm = (e?: any) => {
   if (!formRef.value) return;
   formRef.value.resetFields();
   form.platform = "mp-weixin";
   form.robot = 1;
+  form.appid = e;
+};
+
+const clearResult = () => {
+  executionResult.value = "";
 };
 
 // 选择目录

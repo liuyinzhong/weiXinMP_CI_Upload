@@ -110,7 +110,7 @@
         <el-text type="danger">·有冲突了，需要先解决冲突!!!，然后手动回到原分支</el-text>
       </div>
       <div>
-        <el-text>·目前仅支持上传微信小程序</el-text>
+        <el-text>· 目前仅支持 HBuilder 项目上传微信小程序</el-text>
       </div>
       <div>
         <el-text>·<el-link type="primary" target="_blank" href="https://hx.dcloud.net.cn/cli/publish-mp-weixin?id=uploadprivatekey">上传密钥获取教程</el-link></el-text>

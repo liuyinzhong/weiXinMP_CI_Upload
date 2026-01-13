@@ -4,7 +4,7 @@
       <el-row :gutter="10">
         <el-col :span="12">
           <el-form :model="form" :rules="rules" ref="formRef" label-width="120px" class="upload-form">
-            <el-form-item label="工程目录" prop="path">
+            <el-form-item label="git仓库根目录" prop="path">
               <el-input v-model="form.path" placeholder="请选择工程目录" readonly>
                 <template #prepend>{{ CurrentBranch }}</template>
                 <template #append>
@@ -81,20 +81,33 @@
 
     <el-dialog title="教程" v-model="dialogVisible" width="50%">
       <div>
-        <el-text>·必需设置 HBuilder X 环境变量，以便能使用它的cli.exe程序</el-text>
+        <el-text>·必需设置 HBuilder X 环境变量</el-text>
         <br />
         <el-text>·<el-link type="primary" target="_blank" href="https://hx.dcloud.net.cn/cli/env">环境变量的配置</el-link></el-text>
       </div>
+
+      <div>
+        <el-text>·必需 HBuilder X 同时运行,才能使用它的cli.exe程序，让该工具正常使用</el-text>
+        <br />
+      </div>
+
       <div>
         <el-text>·必须有安装git,并且配置好环境变量</el-text>
         <br />
         <el-text>·<el-link type="primary" target="_blank" href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git">git的安装和配置</el-link></el-text>
       </div>
+
+      <div>
+        <el-text>·必须是 DCloud appid 的项目成员</el-text>
+        <br />
+        <el-text>·<el-link type="primary" target="_blank" href="https://dev.dcloud.net.cn">加入项目成员</el-link></el-text>
+      </div>
+
       <div>
         <el-text>·运行期间不要操作git仓库!!!</el-text>
       </div>
       <div>
-        <el-text>·有冲突了，需要先解决冲突!!!</el-text>
+        <el-text type="danger">·有冲突了，需要先解决冲突!!!，然后手动回到原分支</el-text>
       </div>
       <div>
         <el-text>·目前仅支持上传微信小程序</el-text>

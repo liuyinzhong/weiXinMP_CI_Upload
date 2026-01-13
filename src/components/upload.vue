@@ -69,6 +69,12 @@
               </el-row>
             </el-form-item>
           </el-form>
+          <div>
+            <el-text type="danger">·有冲突了，需要先解决冲突!!!，然后手动回到原分支</el-text>
+          </div>
+          <div>
+            <el-text>·运行期间不要操作git仓库!!!</el-text>
+          </div>
         </el-col>
         <el-col :span="12">
           <el-button style="width: 100%" @click="clearResult">清空结果</el-button>
@@ -103,12 +109,6 @@
         <el-text>·<el-link type="primary" target="_blank" href="https://dev.dcloud.net.cn">加入项目成员</el-link></el-text>
       </div>
 
-      <div>
-        <el-text>·运行期间不要操作git仓库!!!</el-text>
-      </div>
-      <div>
-        <el-text type="danger">·有冲突了，需要先解决冲突!!!，然后手动回到原分支</el-text>
-      </div>
       <div>
         <el-text>· 目前仅支持 HBuilder 项目上传微信小程序</el-text>
       </div>

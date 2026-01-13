@@ -83,13 +83,12 @@
       <div>
         <el-text>·必需设置 HBuilder X 环境变量，以便能使用它的cli.exe程序</el-text>
         <br />
-        <el-space>
-          <el-image style="width: 100px; height: 100px" src="src/assets/view2.png" :preview-src-list="['src/assets/view2.png']" show-progress :initial-index="0" fit="contain" />
-          <el-image style="width: 100px; height: 100px" src="src/assets/view3.png" :preview-src-list="['src/assets/view3.png']" show-progress :initial-index="0" fit="contain" />
-        </el-space>
+        <el-text>·<el-link type="primary" target="_blank" href="https://hx.dcloud.net.cn/cli/env">环境变量的配置</el-link></el-text>
       </div>
       <div>
         <el-text>·必须有安装git,并且配置好环境变量</el-text>
+        <br />
+        <el-text>·<el-link type="primary" target="_blank" href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git">git的安装和配置</el-link></el-text>
       </div>
       <div>
         <el-text>·运行期间不要操作git仓库!!!</el-text>

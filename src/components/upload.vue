@@ -18,7 +18,7 @@
             </el-form-item>
 
             <el-form-item label="项目名称" prop="project">
-              <el-input v-model="form.project" placeholder="请输入项目名称" />
+              <el-input v-model="form.project" placeholder="请选择目录" readonly />
             </el-form-item>
 
             <el-form-item label="AppID" prop="appid">
@@ -230,7 +230,9 @@ const submitWx = async (isClearResult: boolean) => {
     }
 
     // 生成命令
-    const command = `cli publish --platform ${form.platform} --project ${form.project} --upload true --appid ${form.appid} --description ${form.description} --version ${form.version} --privatekey ${form.privatekey} --robot ${form.robot}`;
+    const command = `cli publish --platform ${form.platform} --project ${form.project} --upload true --appid ${removeSpaces(form.appid)} --description ${removeSpaces(form.description)} --version ${removeSpaces(
+      form.version
+    )} --privatekey ${removeSpaces(form.privatekey)} --robot ${form.robot}`;
 
     // 执行命令
     loading.value = true;
@@ -363,6 +365,11 @@ const showDialog = () => {
 };
 const closeDialog = () => {
   dialogVisible.value = false;
+};
+
+/* 移除字符串中的空格 */
+const removeSpaces = (str: string) => {
+  return str.replace(/\s+/g, "");
 };
 </script>
 

@@ -98,15 +98,21 @@
       </div>
 
       <div>
-        <el-text>·必须有安装git,并且配置好环境变量</el-text>
+        <el-text>·HBuilder X 必须已安装 weapp-miniprogram-ci 插件</el-text>
         <br />
-        <el-text>·<el-link type="primary" target="_blank" href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git">git的安装和配置</el-link></el-text>
+        <el-text>·<el-link type="primary" target="_blank" href="https://ext.dcloud.net.cn/plugin?name=weapp-miniprogram-ci">插件地址</el-link></el-text>
       </div>
 
       <div>
         <el-text>·必须是 DCloud appid 的项目成员</el-text>
         <br />
         <el-text>·<el-link type="primary" target="_blank" href="https://dev.dcloud.net.cn">加入项目成员</el-link></el-text>
+      </div>
+
+      <div>
+        <el-text>·必须有安装git,并且配置好环境变量</el-text>
+        <br />
+        <el-text>·<el-link type="primary" target="_blank" href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git">git的安装和配置</el-link></el-text>
       </div>
 
       <div>

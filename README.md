@@ -17,9 +17,11 @@
 
 - 必需 HBuilder X 同时运行,才能使用它的 cli.exe 程序，让该工具正常使用
 
-- 必须有安装 git,并且配置好环境变量([点击跳转](https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git))
+- HBuilder X 必须已安装 weapp-miniprogram-ci 插件。([点击跳转](https://ext.dcloud.net.cn/plugin?name=weapp-miniprogram-ci))
 
 - 必须是 DCloud appid 的项目成员([点击跳转](https://dev.dcloud.net.cn))
+
+- 必须有安装 git,并且配置好环境变量([点击跳转](https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git))
 
 - 运行期间不要操作 git 仓库!!!
 

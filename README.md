@@ -4,3 +4,5 @@
 一键操作，解放双手！！！
 
 <img src="view.png" alt="view.png" />
+<img src="view2.png" alt="view.png" />
+<img src="view3.png" alt="view.png" />

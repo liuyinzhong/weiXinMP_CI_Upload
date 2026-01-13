@@ -2,7 +2,7 @@
   "name": "weixinmp-ci-upload",
   "version": "1.0.0",
   "description": "微信小程序 CI 上传工具",
-  "main": "dist/main.js",
+  "main": "dist/electron/main.js",
   "scripts": {
     "dev": "vite --port 5173",
     "build": "tsc && vite build && tsc -p tsconfig.electron.json",
@@ -22,16 +22,12 @@
       "electron/**/*"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "public/favicon.ico"
+      "target": "nsis"
     },
     "nsis": {
       "oneClick": false,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon": "public/favicon.ico",
-      "uninstallerIcon": "public/favicon.ico",
-      "installerHeaderIcon": "public/favicon.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
     }
@@ -57,6 +53,7 @@
   "dependencies": {
     "element-plus": "^2.4.0",
     "iconv-lite": "^0.7.2",
+    "safer-buffer": "^2.1.2",
     "vue": "^3.3.0"
   }
 }

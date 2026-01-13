@@ -6,17 +6,12 @@ productName: 微信小程序 CI 上传工具
 files:
   - filter:
       - dist/**/*
-      - electron/**/*
 win:
   target: nsis
-  icon: public/favicon.ico
 nsis:
   oneClick: false
   allowElevation: true
   allowToChangeInstallationDirectory: true
-  installerIcon: public/favicon.ico
-  uninstallerIcon: public/favicon.ico
-  installerHeaderIcon: public/favicon.ico
   createDesktopShortcut: true
   createStartMenuShortcut: true
 electronVersion: 28.3.3

@@ -42,7 +42,7 @@
             </el-form-item>
 
             <el-form-item label="机器人编号" prop="robot">
-              <el-input-number v-model="form.robot" :min="1" :max="30">
+              <el-input-number v-model="form.robot" :min="1" :max="30" :precision="0" :step="1" style="width: 100%">
                 <template #suffix>
                   <el-tooltip content="机器人编号就是使用哪个默认微信号上传小程序，取值1~30"> ? </el-tooltip>
                 </template>
@@ -63,25 +63,12 @@
                 <el-col :span="12">
                   <el-button style="width: 100%" @click="resetForm">重置</el-button>
                 </el-col>
+                <el-col :span="12">
+                  <el-button style="width: 100%" @click="showDialog">教程</el-button>
+                </el-col>
               </el-row>
             </el-form-item>
           </el-form>
-          <div>
-            <el-text>运行期间不要操作git仓库!!!</el-text>
-            <el-text>。有冲突了，需要先解决冲突!!!。</el-text>
-            <el-text>目前仅支持上传微信小程序。</el-text>
-            <el-link type="primary" target="_blank" href="https://hx.dcloud.net.cn/cli/publish-mp-weixin?id=uploadprivatekey">上传密钥获取教程</el-link>
-          </div>
-
-          <div>
-            <el-text>【合并且发布体验】：把当前分支的代码合并到test,并且在test分支发布体验版,发布后再切换回原分支</el-text>
-          </div>
-          <div>
-            <el-text>【仅合并】：把当前分支的代码合并到test,合并后再切换回原分支，不执行发布操作</el-text>
-          </div>
-          <div>
-            <el-text>【当前分支发布体验】：把当前分支的代码发布到体验版，不执行合并操作</el-text>
-          </div>
         </el-col>
         <el-col :span="12">
           <el-scrollbar ref="scrollbarRef" height="400px">
@@ -90,6 +77,45 @@
         </el-col>
       </el-row>
     </div>
+
+    <el-dialog title="教程" v-model="dialogVisible" width="50%">
+      <div>
+        <el-text>·必需设置 HBuilder X 环境变量，以便能使用它的cli.exe程序</el-text>
+        <br />
+        <el-space>
+          <el-image style="width: 100px; height: 100px" src="src/assets/view2.png" :preview-src-list="['src/assets/view2.png']" show-progress :initial-index="0" fit="contain" />
+          <el-image style="width: 100px; height: 100px" src="src/assets/view3.png" :preview-src-list="['src/assets/view3.png']" show-progress :initial-index="0" fit="contain" />
+        </el-space>
+      </div>
+      <div>
+        <el-text>·必须有安装git,并且配置好环境变量</el-text>
+      </div>
+      <div>
+        <el-text>·运行期间不要操作git仓库!!!</el-text>
+      </div>
+      <div>
+        <el-text>·有冲突了，需要先解决冲突!!!</el-text>
+      </div>
+      <div>
+        <el-text>·目前仅支持上传微信小程序</el-text>
+      </div>
+      <div>
+        <el-text>·<el-link type="primary" target="_blank" href="https://hx.dcloud.net.cn/cli/publish-mp-weixin?id=uploadprivatekey">上传密钥获取教程</el-link></el-text>
+      </div>
+      <br />
+      <div>
+        <el-text>【合并且发布体验】：把当前分支的代码合并到test,并且在test分支发布体验版,发布后再切换回原分支</el-text>
+      </div>
+      <div>
+        <el-text>【仅合并】：把当前分支的代码合并到test,合并后再切换回原分支，不执行发布操作</el-text>
+      </div>
+      <div>
+        <el-text>【当前分支发布体验】：把当前分支的代码发布到体验版，不执行合并操作</el-text>
+      </div>
+      <template #footer>
+        <el-button type="primary" @click="dialogVisible = false">取消</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -155,41 +181,41 @@ const submitFormV2 = async (type: number) => {
 
       executionResult.value += `\n***准备将${CurrentBranch.value}合并到test分支...`;
 
-      executionResult.value += "\n***拉取当前分支代码...";
-      await executeCommand(form.path, `git pull origin ${CurrentBranch.value}`);
-      executionResult.value += "\n***已拉取";
+      executionResult.value += "\n***拉取当前分支代码...\n";
+      executionResult.value += await executeCommand(form.path, `git pull origin ${CurrentBranch.value}`);
+      executionResult.value += "\n***已拉取\n";
 
-      executionResult.value += "\n***推送本地到当前远程分支...";
-      await executeCommand(form.path, `git pull origin ${CurrentBranch.value}`);
-      executionResult.value += "\n***已推送";
+      executionResult.value += "\n***推送本地到当前远程分支...\n";
+      executionResult.value += await executeCommand(form.path, `git pull origin ${CurrentBranch.value}`);
+      executionResult.value += "\n***已推送\n";
 
-      executionResult.value += "\n***切换到test分支...";
-      await executeCommand(form.path, `git checkout test`);
-      executionResult.value += "\n***已切换";
+      executionResult.value += "\n***切换到test分支...\n";
+      executionResult.value += await executeCommand(form.path, `git checkout test`);
+      executionResult.value += "\n***已切换\n";
 
-      executionResult.value += "\n***在test分支拉取最新代码...";
-      await executeCommand(form.path, `git pull origin test`);
-      executionResult.value += "\n***已拉取";
+      executionResult.value += "\n***在test分支拉取最新代码...\n";
+      executionResult.value += await executeCommand(form.path, `git pull origin test`);
+      executionResult.value += "\n***已拉取\n";
 
-      executionResult.value += `\n***正在合并${CurrentBranch.value}到test...`;
-      await executeCommand(form.path, `git merge ${CurrentBranch.value}`);
-      executionResult.value += "\n***已合并";
+      executionResult.value += `\n***正在合并${CurrentBranch.value}到test...\n`;
+      executionResult.value += await executeCommand(form.path, `git merge ${CurrentBranch.value}`);
+      executionResult.value += "\n***已合并\n";
 
-      executionResult.value += "\n***推送本地更改到远程test分支...";
-      await executeCommand(form.path, `git push origin test`);
-      executionResult.value += "\n***已推送";
+      executionResult.value += "\n***推送本地更改到远程test分支...\n";
+      executionResult.value += await executeCommand(form.path, `git push origin test`);
+      executionResult.value += "\n***已推送\n";
 
       if (type === 0) {
-        executionResult.value += "\n***在test分支上提交体验版";
+        executionResult.value += "\n***在test分支上提交体验版\n";
         await submitWx();
-        executionResult.value += "\n***已提交";
+        executionResult.value += "\n***已提交\n";
       }
 
-      executionResult.value += `\n***合并成功！切换回原 ${CurrentBranch.value} 分支`;
-      await executeCommand(form.path, `git checkout ${CurrentBranch.value}`);
-      executionResult.value += "\n***已切换";
+      executionResult.value += `\n***合并成功！切换回原 ${CurrentBranch.value} 分支\n`;
+      executionResult.value += await executeCommand(form.path, `git checkout ${CurrentBranch.value}`);
+      executionResult.value += "\n***已切换\n";
     } catch (error: any) {
-      executionResult.value += `\n执行失败: 请检查是否发生文件冲突！！！`;
+      executionResult.value += `\n执行失败: 请检查是否发生文件冲突！！！\n`;
     } finally {
       loading.value = false;
     }
@@ -319,6 +345,14 @@ const executeCommand = async (execPath: string, command: string): Promise<string
       reject(error.message);
     }
   });
+};
+
+const dialogVisible = ref(false);
+const showDialog = () => {
+  dialogVisible.value = true;
+};
+const closeDialog = () => {
+  dialogVisible.value = false;
 };
 </script>
 

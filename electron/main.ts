@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import * as path from "path";
+import * as fs from "fs";
 import { exec } from "child_process";
 import iconv from "iconv-lite";
 
@@ -20,7 +21,24 @@ function createWindow() {
 
   // 加载渲染进程
   if (app.isPackaged) {
-    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
+    // 当应用被打包后，需要从正确的位置加载index.html
+    // 对于electron-builder打包的应用，主进程代码会被放在resources/app.asar/main.js
+    // 而渲染进程的文件会被放在resources/app.asar/dist/
+    const indexPath = path.join(__dirname, "index.html");
+    console.log("尝试加载:", indexPath);
+    if (fs.existsSync(indexPath)) {
+      mainWindow.loadFile(indexPath);
+    } else {
+      // 尝试其他可能的路径
+      const altPath = path.join(__dirname, "../index.html");
+      console.log("尝试备选路径:", altPath);
+      if (fs.existsSync(altPath)) {
+        mainWindow.loadFile(altPath);
+      } else {
+        console.error("无法找到index.html文件");
+        mainWindow.loadURL("about:blank");
+      }
+    }
   } else {
     mainWindow.loadURL("http://localhost:5173");
   }

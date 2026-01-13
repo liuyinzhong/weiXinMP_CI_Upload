@@ -6,6 +6,7 @@ productName: 微信小程序 CI 上传工具
 files:
   - filter:
       - dist/**/*
+      - electron/**/*
 win:
   target: nsis
 nsis:

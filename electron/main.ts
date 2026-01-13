@@ -24,7 +24,7 @@ function createWindow() {
     // 当应用被打包后，需要从正确的位置加载index.html
     // 对于electron-builder打包的应用，主进程代码会被放在resources/app.asar/main.js
     // 而渲染进程的文件会被放在resources/app.asar/dist/
-    const indexPath = path.join(__dirname, "index.html");
+    const indexPath = path.join(__dirname, "../dist/index.html");
     console.log("尝试加载:", indexPath);
     if (fs.existsSync(indexPath)) {
       mainWindow.loadFile(indexPath);

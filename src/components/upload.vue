@@ -43,19 +43,11 @@
             </el-form-item>
 
             <el-form-item label="项目名称" prop="project">
-              <el-input v-model="form.project" placeholder="请选择目录" readonly />
-            </el-form-item>
-
-            <el-form-item label="AppID" prop="appid">
-              <el-input v-model="form.appid" placeholder="请输入小程序 AppID" />
-            </el-form-item>
-
-            <el-form-item label="发版描述" prop="description">
-              <el-input v-model="form.description" placeholder="请输入发版描述" />
-            </el-form-item>
-
-            <el-form-item label="版本号" prop="version">
-              <el-input v-model="form.version" placeholder="请输入版本号" />
+              <el-input
+                v-model="form.project"
+                placeholder="请选择目录后自动获取"
+                readonly
+              />
             </el-form-item>
 
             <el-form-item label="上传密钥" prop="privatekey">
@@ -70,6 +62,22 @@
                   </el-button>
                 </template>
               </el-input>
+            </el-form-item>
+
+            <el-form-item label="AppID" prop="appid">
+              <el-input
+                v-model="form.appid"
+                placeholder="选择密钥文件后自动获取"
+                readonly
+              />
+            </el-form-item>
+
+            <el-form-item label="发版描述" prop="description">
+              <el-input v-model="form.description" placeholder="请输入发版描述" />
+            </el-form-item>
+
+            <el-form-item label="版本号" prop="version">
+              <el-input v-model="form.version" placeholder="请输入版本号" />
             </el-form-item>
 
             <el-form-item label="机器人编号" prop="robot">
@@ -122,9 +130,6 @@
                   >
                     {{ CurrentBranch }}发版生产
                   </el-button>
-                </el-col>
-                <el-col :span="12">
-                  <el-button style="width: 100%" @click="resetForm()">重置</el-button>
                 </el-col>
                 <el-col :span="12">
                   <el-button style="width: 100%" @click="showDialog">教程</el-button>
@@ -419,6 +424,9 @@ const mergeToTest = async (isCiUpload: boolean) => {
     return;
   }
 
+  /* 克隆当前名称，避免切换窗口时当前分支名称被改变，以至于合并后无法回到原始分支 */
+  const originalBranch = CurrentBranch.value;
+
   loading.value = true;
   executionResult.value = "正在执行命令...\n";
 
@@ -472,10 +480,10 @@ const mergeToTest = async (isCiUpload: boolean) => {
       executionResult.value += "\n***已提交\n";
     }
 
-    executionResult.value += `\n***合并成功！切换回原 ${CurrentBranch.value} 分支\n`;
+    executionResult.value += `\n***合并成功！切换回原 ${originalBranch} 分支\n`;
     executionResult.value += await executeCommand(
       form.path,
-      `git checkout ${CurrentBranch.value}`
+      `git checkout ${originalBranch}`
     );
     executionResult.value += "***已切换\n";
   } catch (error: any) {
@@ -483,15 +491,6 @@ const mergeToTest = async (isCiUpload: boolean) => {
   } finally {
     loading.value = false;
   }
-};
-
-// 重置表单
-const resetForm = (e?: any) => {
-  if (!formRef.value) return;
-  formRef.value.resetFields();
-  form.platform = "mp-weixin";
-  form.robot = 1;
-  form.appid = e;
 };
 
 /**
@@ -528,6 +527,9 @@ const selectPrivateKeyFile = async () => {
     const file = await window.electronAPI.selectPrivateKeyFile();
     if (file) {
       form.privatekey = file;
+      const match = file.match(/private\.([a-zA-Z0-9]+)\.key/);
+      const appid = match ? match[1] : "";
+      form.appid = appid;
     }
   } catch (error) {
     console.error("选择私钥文件失败:", error);

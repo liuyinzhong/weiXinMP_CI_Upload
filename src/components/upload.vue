@@ -348,9 +348,9 @@ const ci_upload = async (isClearResult: boolean) => {
       form.project
     } --upload true --appid ${removeSpaces(form.appid)} --description ${removeSpaces(
       form.description
-    )} --version ${removeSpaces(form.version)} --privatekey ${removeSpaces(
-      form.privatekey
-    )} --robot ${form.robot}`;
+    )}。由${CurrentBranch.value}分支上传 --version ${removeSpaces(
+      form.version
+    )} --privatekey ${removeSpaces(form.privatekey)} --robot ${form.robot}`;
 
     // 执行命令
     loading.value = true;

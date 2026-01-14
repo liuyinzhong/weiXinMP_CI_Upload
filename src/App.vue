@@ -1,6 +1,17 @@
 <template>
-  <el-tabs v-model="editableTabsValue" type="card" editable class="demo-tabs" @edit="handleTabsEdit">
-    <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
+  <el-tabs
+    v-model="editableTabsValue"
+    type="card"
+    editable
+    class="demo-tabs"
+    @edit="handleTabsEdit"
+  >
+    <el-tab-pane
+      v-for="item in editableTabs"
+      :key="item.name"
+      :label="item.title"
+      :name="item.name"
+    >
       <upload />
     </el-tab-pane>
   </el-tabs>
@@ -20,11 +31,14 @@ onMounted(() => {
   addTab("默认");
 });
 
-const handleTabsEdit = (targetName: TabPaneName | undefined, action: "remove" | "add") => {
+const handleTabsEdit = (
+  targetName: TabPaneName | undefined,
+  action: "remove" | "add"
+) => {
   if (action === "add") {
     ElMessageBox.prompt("请输入名称", "提示", {
       inputPattern: /.+/,
-      inputErrorMessage: "必填项",
+      inputErrorMessage: "必填项"
     })
       .then(({ value }) => {
         addTab(value);
@@ -57,7 +71,7 @@ const addTab = (value: string) => {
 
   editableTabs.value.push({
     title: value,
-    name: value,
+    name: value
   });
   editableTabsValue.value = value;
 };

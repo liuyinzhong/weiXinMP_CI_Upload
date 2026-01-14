@@ -14,9 +14,9 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
-      nodeIntegration: false,
+      nodeIntegration: false
     },
-    title: "微信小程序 CI 上传工具",
+    title: "微信小程序 CI 上传工具"
   });
 
   // 加载渲染进程
@@ -49,10 +49,15 @@ function createWindow() {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
+
+  // 监听窗口聚焦事件，通知渲染进程重新获取分支名称
+  mainWindow.on("focus", () => {
+    mainWindow?.webContents.send("window-focused");
+  });
 }
 
 // 处理表单提交，执行命令
-ipcMain.on("execute-command", (event, command) => {
+ipcMain.on("execute-command", (event, { command, commandId }) => {
   console.log("执行命令:", command);
 
   const child = exec(command, { encoding: "buffer" });
@@ -67,14 +72,17 @@ ipcMain.on("execute-command", (event, command) => {
         if (!/[\u4e00-\u9fa5]/.test(utf8Output) || /�/.test(utf8Output)) {
           // 如果没有中文字符或者有乱码标记，尝试 GBK 解码
           const gbkOutput = iconv.decode(data, "gbk");
-          event.sender.send("command-output", gbkOutput);
+          event.sender.send("command-output", { commandId, output: gbkOutput });
         } else {
           // UTF-8 解码成功，直接使用
-          event.sender.send("command-output", utf8Output);
+          event.sender.send("command-output", { commandId, output: utf8Output });
         }
       } catch (error) {
         // 如果所有解码尝试都失败，使用 binary 格式
-        event.sender.send("command-output", data.toString("binary"));
+        event.sender.send("command-output", {
+          commandId,
+          output: data.toString("binary")
+        });
       }
     });
   }
@@ -89,14 +97,17 @@ ipcMain.on("execute-command", (event, command) => {
         if (!/[\u4e00-\u9fa5]/.test(utf8Output) || /�/.test(utf8Output)) {
           // 如果没有中文字符或者有乱码标记，尝试 GBK 解码
           const gbkOutput = iconv.decode(data, "gbk");
-          event.sender.send("command-output", gbkOutput);
+          event.sender.send("command-output", { commandId, output: gbkOutput });
         } else {
           // UTF-8 解码成功，直接使用
-          event.sender.send("command-output", utf8Output);
+          event.sender.send("command-output", { commandId, output: utf8Output });
         }
       } catch (error) {
         // 如果所有解码尝试都失败，使用 binary 格式
-        event.sender.send("command-output", data.toString("binary"));
+        event.sender.send("command-output", {
+          commandId,
+          output: data.toString("binary")
+        });
       }
     });
   }
@@ -104,15 +115,24 @@ ipcMain.on("execute-command", (event, command) => {
   // 命令执行完成
   child.on("close", (code) => {
     if (code === 0) {
-      event.sender.send("command-result", { success: true, message: "命令执行完成" });
+      event.sender.send("command-result", {
+        commandId,
+        result: { success: true, message: "命令执行完成" }
+      });
     } else {
-      event.sender.send("command-result", { success: false, message: `命令执行失败，退出码: ${code}` });
+      event.sender.send("command-result", {
+        commandId,
+        result: { success: false, message: `命令执行失败，退出码: ${code}` }
+      });
     }
   });
 
   // 命令执行出错
   child.on("error", (error) => {
-    event.sender.send("command-result", { success: false, message: error.message });
+    event.sender.send("command-result", {
+      commandId,
+      result: { success: false, message: error.message }
+    });
   });
 });
 
@@ -121,7 +141,7 @@ ipcMain.on("select-directory", (event) => {
   dialog
     .showOpenDialog({
       properties: ["openDirectory"],
-      title: "选择工程目录",
+      title: "选择工程目录"
     })
     .then((result) => {
       if (!result.canceled && result.filePaths.length > 0) {
@@ -142,8 +162,8 @@ ipcMain.on("select-privatekey-file", (event) => {
       title: "选择私钥文件",
       filters: [
         { name: "Key Files", extensions: ["key"] },
-        { name: "All Files", extensions: ["*"] },
-      ],
+        { name: "All Files", extensions: ["*"] }
+      ]
     })
     .then((result) => {
       if (!result.canceled && result.filePaths.length > 0) {

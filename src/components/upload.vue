@@ -3,7 +3,13 @@
     <div class="main-content">
       <el-row :gutter="10">
         <el-col :span="12">
-          <el-form :model="form" :rules="rules" ref="formRef" label-width="120px" class="upload-form">
+          <el-form
+            :model="form"
+            :rules="rules"
+            ref="formRef"
+            label-width="120px"
+            class="upload-form"
+          >
             <el-form-item label="git仓库根目录" prop="path">
               <el-input v-model="form.path" placeholder="请选择工程目录" readonly>
                 <template #prepend>{{ CurrentBranch }}</template>
@@ -12,6 +18,25 @@
                 </template>
               </el-input>
             </el-form-item>
+
+            <el-row :gutter="10">
+              <el-col :span="12">
+                <el-form-item label="生产分支名称" prop="prodBranchName">
+                  <el-select v-model="form.prodBranchName" placeholder="请选择">
+                    <el-option label="master" value="master" />
+                    <el-option label="main" value="main" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="测试分支名称" prop="testBranchName">
+                  <el-input
+                    v-model.trim="form.testBranchName"
+                    placeholder="请输入"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
             <el-form-item label="平台" prop="platform">
               <el-input v-model="form.platform" readonly />
@@ -25,8 +50,8 @@
               <el-input v-model="form.appid" placeholder="请输入小程序 AppID" />
             </el-form-item>
 
-            <el-form-item label="发布描述" prop="description">
-              <el-input v-model="form.description" placeholder="请输入发布描述" />
+            <el-form-item label="发版描述" prop="description">
+              <el-input v-model="form.description" placeholder="请输入发版描述" />
             </el-form-item>
 
             <el-form-item label="版本号" prop="version">
@@ -34,17 +59,34 @@
             </el-form-item>
 
             <el-form-item label="上传密钥" prop="privatekey">
-              <el-input v-model="form.privatekey" placeholder="请选择上传密钥文件" readonly>
+              <el-input
+                v-model="form.privatekey"
+                placeholder="请选择上传密钥文件"
+                readonly
+              >
                 <template #append>
-                  <el-button type="primary" @click="selectPrivateKeyFile">选择文件</el-button>
+                  <el-button type="primary" @click="selectPrivateKeyFile">
+                    选择文件
+                  </el-button>
                 </template>
               </el-input>
             </el-form-item>
 
             <el-form-item label="机器人编号" prop="robot">
-              <el-input-number v-model="form.robot" :min="1" :max="30" :precision="0" :step="1" style="width: 100%">
+              <el-input-number
+                v-model="form.robot"
+                :min="1"
+                :max="30"
+                :precision="0"
+                :step="1"
+                style="width: 100%"
+              >
                 <template #suffix>
-                  <el-tooltip content="机器人编号就是使用哪个默认微信号上传小程序，取值1~30"> ? </el-tooltip>
+                  <el-tooltip
+                    content="机器人编号就是使用哪个默认微信号上传小程序，取值1~30"
+                  >
+                    ?
+                  </el-tooltip>
                 </template>
               </el-input-number>
             </el-form-item>
@@ -52,13 +94,34 @@
             <el-form-item>
               <el-row :gutter="20">
                 <el-col :span="12">
-                  <el-button style="width: 100%" type="warning" @click="submitFormV2(0)" :loading="loading">合并且发布体验</el-button>
+                  <el-button
+                    style="width: 100%"
+                    type="warning"
+                    @click="buildTest"
+                    :loading="loading"
+                  >
+                    发版体验
+                  </el-button>
                 </el-col>
                 <el-col :span="12">
-                  <el-button style="width: 100%" block @click="submitFormV2(1)" :loading="loading">仅合并</el-button>
+                  <el-button
+                    style="width: 100%"
+                    block
+                    @click="mergeToTest(false)"
+                    :loading="loading"
+                  >
+                    仅合并
+                  </el-button>
                 </el-col>
                 <el-col :span="12">
-                  <el-button style="width: 100%" type="success" @click="submitForm" :loading="loading">{{ CurrentBranch }}分支发布体验</el-button>
+                  <el-button
+                    style="width: 100%"
+                    type="success"
+                    @click="buildProd"
+                    :loading="loading"
+                  >
+                    {{ CurrentBranch }}发版生产
+                  </el-button>
                 </el-col>
                 <el-col :span="12">
                   <el-button style="width: 100%" @click="resetForm()">重置</el-button>
@@ -70,7 +133,9 @@
             </el-form-item>
           </el-form>
           <div>
-            <el-text type="danger">·有冲突了，需要先解决冲突!!!，然后手动回到原分支</el-text>
+            <el-text type="danger">
+              ·有冲突了，需要先解决冲突!!!，然后手动回到原分支
+            </el-text>
           </div>
           <div>
             <el-text>·运行期间不要操作git仓库!!!</el-text>
@@ -79,7 +144,16 @@
         <el-col :span="12">
           <el-button style="width: 100%" @click="clearResult">清空结果</el-button>
           <el-scrollbar ref="scrollbarRef" height="450px">
-            <pre style="background-color: #f5f7fa; padding: 0 10px; min-height: 450px; white-space: pre-wrap; word-wrap: break-word">{{ executionResult }}</pre>
+            <pre
+              style="
+                background-color: #f5f7fa;
+                padding: 0 10px;
+                min-height: 450px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+              "
+              >{{ executionResult }}</pre
+            >
           </el-scrollbar>
         </el-col>
       </el-row>
@@ -87,82 +161,157 @@
 
     <el-dialog title="教程" v-model="dialogVisible" width="50%">
       <div>
-        <el-text>·必需设置 HBuilder X 环境变量</el-text>
+        <el-text>1、HBuilder X必需设置环境变量</el-text>
         <br />
-        <el-text>·<el-link type="primary" target="_blank" href="https://hx.dcloud.net.cn/cli/env">环境变量的配置</el-link></el-text>
+        <el-text>
+          ·
+          <el-link type="primary" target="_blank" href="https://hx.dcloud.net.cn/cli/env">
+            环境变量的配置
+          </el-link>
+        </el-text>
       </div>
 
       <div>
-        <el-text>·必需 HBuilder X 同时运行,才能使用它的cli.exe程序，让该工具正常使用</el-text>
+        <el-text>
+          2、HBuilder X 必需和本工具同时运行,才能使用它的cli.exe程序，让该工具正常使用
+        </el-text>
         <br />
       </div>
 
       <div>
-        <el-text>·HBuilder X 必须已安装 weapp-miniprogram-ci 插件</el-text>
+        <el-text>3、HBuilder X 必须已安装 weapp-miniprogram-ci 插件</el-text>
         <br />
-        <el-text>·<el-link type="primary" target="_blank" href="https://ext.dcloud.net.cn/plugin?name=weapp-miniprogram-ci">插件地址</el-link></el-text>
+        <el-text>
+          ·
+          <el-link
+            type="primary"
+            target="_blank"
+            href="https://ext.dcloud.net.cn/plugin?name=weapp-miniprogram-ci"
+          >
+            插件地址
+          </el-link>
+        </el-text>
       </div>
 
       <div>
-        <el-text>·必须是 DCloud appid 的项目成员</el-text>
+        <el-text>4、必须是 DCloud appid 的项目成员</el-text>
         <br />
-        <el-text>·<el-link type="primary" target="_blank" href="https://dev.dcloud.net.cn">加入项目成员</el-link></el-text>
+        <el-text>
+          ·
+          <el-link type="primary" target="_blank" href="https://dev.dcloud.net.cn">
+            加入项目成员
+          </el-link>
+        </el-text>
       </div>
 
       <div>
-        <el-text>·必须有安装git,并且配置好环境变量</el-text>
+        <el-text>5、必须有安装git,并且配置好环境变量</el-text>
         <br />
-        <el-text>·<el-link type="primary" target="_blank" href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git">git的安装和配置</el-link></el-text>
+        <el-text>
+          ·
+          <el-link
+            type="primary"
+            target="_blank"
+            href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git"
+          >
+            git的安装和配置
+          </el-link>
+        </el-text>
       </div>
 
       <div>
-        <el-text>· 目前仅支持 HBuilder 项目上传微信小程序</el-text>
+        <el-text>
+          6、获取小程序上传密钥。(如果你的公网出口ip是固定的，可开启并配置。否则关闭白名单)
+        </el-text>
       </div>
       <div>
-        <el-text>·<el-link type="primary" target="_blank" href="https://hx.dcloud.net.cn/cli/publish-mp-weixin?id=uploadprivatekey">上传密钥获取教程</el-link></el-text>
+        <el-text>
+          ·
+          <el-link
+            type="primary"
+            target="_blank"
+            href="https://hx.dcloud.net.cn/cli/publish-mp-weixin?id=uploadprivatekey"
+          >
+            上传密钥获取教程
+          </el-link>
+        </el-text>
+      </div>
+      <div>完成以上配置即可开始使用</div>
+      <br />
+      <div>
+        <el-text>· 目前仅支持使用HBuilder所开发的uni-app项目上传微信小程序</el-text>
       </div>
       <br />
       <div>
-        <el-text>【合并且发布体验】：把当前分支的代码合并到test,并且在test分支发布体验版,发布后再切换回原分支</el-text>
+        <el-text>
+          【发版体验】：把当前分支的代码合并到test,并且在test分支发版体验版,发版后再切换回原分支
+        </el-text>
       </div>
       <div>
-        <el-text>【仅合并】：把当前分支的代码合并到test,合并后再切换回原分支，不执行发布操作</el-text>
+        <el-text>
+          【仅合并】：把当前分支的代码合并到test,合并后再切换回原分支，不执行发版操作
+        </el-text>
       </div>
       <div>
-        <el-text>【当前分支发布体验】：把当前分支的代码发布到体验版，不执行合并操作</el-text>
+        <el-text>
+          【当前分支发版生产】：把当前分支的代码发版到体验版，不执行合并操作
+        </el-text>
       </div>
       <template #footer>
-        <el-button type="primary" @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">我知道了</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, onMounted, onUnmounted } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
+
+onMounted(() => {
+  // 监听窗口聚焦事件，重新获取分支名称
+  window.addEventListener("window-focused", handleWindowFocus);
+});
+
+onUnmounted(() => {
+  // 移除事件监听器
+  window.removeEventListener("window-focused", handleWindowFocus);
+});
+
+// 处理窗口聚焦事件
+const handleWindowFocus = () => {
+  // 只有在已经选择了目录的情况下才重新获取分支名称
+  if (form.path) {
+    getCurrentBranch();
+    getBranchList();
+  }
+};
 
 // 表单数据
 const form = reactive({
   path: "",
+  prodBranchName: "master",
+  testBranchName: "test",
   platform: "mp-weixin",
   project: "",
   appid: "",
   description: "",
   version: "",
   privatekey: "",
-  robot: 1,
+  robot: 1
 });
 
 // 表单验证规则
 const rules = reactive<FormRules>({
+  path: [{ required: true, message: "请选择工程目录", trigger: "blur" }],
+  prodBranchName: [{ required: true, message: "请输入生产分支名称", trigger: "blur" }],
+  testBranchName: [{ required: true, message: "请输入测试分支名称", trigger: "blur" }],
   project: [{ required: true, message: "请输入项目名称", trigger: "blur" }],
   appid: [{ required: true, message: "请输入小程序 AppID", trigger: "blur" }],
-  description: [{ required: true, message: "请输入发布描述", trigger: "blur" }],
+  description: [{ required: true, message: "请输入发版描述", trigger: "blur" }],
   version: [{ required: true, message: "请输入版本号", trigger: "blur" }],
   privatekey: [{ required: true, message: "请输入私钥文件路径", trigger: "blur" }],
-  path: [{ required: true, message: "请选择工程目录", trigger: "blur" }],
-  robot: [{ required: true, message: "请输入机器人编号", trigger: "blur" }],
+  robot: [{ required: true, message: "请输入机器人编号", trigger: "blur" }]
 });
 
 // 表单引用
@@ -176,85 +325,31 @@ const executionResult = ref("");
 
 // 当前分支名称
 const CurrentBranch = ref("");
+// 当前仓库本地分支列表
+const BranchList = ref<string[]>([]);
 
-const submitFormV2 = async (type: number) => {
-  if (!formRef.value) return;
-
-  await formRef.value.validate(async (valid) => {
-    if (!valid) {
-      executionResult.value += "\n表单验证失败";
-      return;
-    }
-
-    loading.value = true;
-    executionResult.value = "正在执行命令...\n";
-
-    try {
-      let status = "";
-
-      status = await executeCommand(form.path, `git status --porcelain`);
-      if (status !== "") {
-        executionResult.value += "\n当前分支有未提交的文件，请先提交";
-        return;
-      }
-
-      executionResult.value += `\n***准备将${CurrentBranch.value}合并到test分支...`;
-
-      executionResult.value += "\n***拉取当前分支代码...\n";
-      executionResult.value += await executeCommand(form.path, `git pull origin ${CurrentBranch.value}`);
-      executionResult.value += "\n***已拉取\n";
-
-      executionResult.value += "\n***推送本地到当前远程分支...\n";
-      executionResult.value += await executeCommand(form.path, `git pull origin ${CurrentBranch.value}`);
-      executionResult.value += "\n***已推送\n";
-
-      executionResult.value += "\n***切换到test分支...\n";
-      executionResult.value += await executeCommand(form.path, `git checkout test`);
-      executionResult.value += "\n***已切换\n";
-
-      executionResult.value += "\n***在test分支拉取最新代码...\n";
-      executionResult.value += await executeCommand(form.path, `git pull origin test`);
-      executionResult.value += "\n***已拉取\n";
-
-      executionResult.value += `\n***正在合并${CurrentBranch.value}到test...\n`;
-      executionResult.value += await executeCommand(form.path, `git merge ${CurrentBranch.value}`);
-      executionResult.value += "\n***已合并\n";
-
-      executionResult.value += "\n***推送本地更改到远程test分支...\n";
-      executionResult.value += await executeCommand(form.path, `git push origin test`);
-      executionResult.value += "\n***已推送\n";
-
-      if (type === 0) {
-        executionResult.value += "\n***在test分支上提交体验版\n";
-        await submitWx(false);
-        executionResult.value += "\n***已提交\n";
-      }
-
-      executionResult.value += `\n***合并成功！切换回原 ${CurrentBranch.value} 分支\n`;
-      executionResult.value += await executeCommand(form.path, `git checkout ${CurrentBranch.value}`);
-      executionResult.value += "\n***已切换\n";
-    } catch (error: any) {
-      executionResult.value += `\n执行失败: 请检查是否发生文件冲突！！！\n`;
-    } finally {
-      loading.value = false;
-    }
-  });
-};
-
-const submitWx = async (isClearResult: boolean) => {
+/**
+ * 上传到微信小程序CI
+ * @param isClearResult 是否清空右边已有的命令行结果
+ */
+const ci_upload = async (isClearResult: boolean) => {
   return new Promise(async (resolve, reject) => {
     if (isClearResult) {
       clearResult();
     }
 
     // 生成命令
-    const command = `cli publish --platform ${form.platform} --project ${form.project} --upload true --appid ${removeSpaces(form.appid)} --description ${removeSpaces(form.description)} --version ${removeSpaces(
-      form.version
-    )} --privatekey ${removeSpaces(form.privatekey)} --robot ${form.robot}`;
+    const command = `cli publish --platform ${form.platform} --project ${
+      form.project
+    } --upload true --appid ${removeSpaces(form.appid)} --description ${removeSpaces(
+      form.description
+    )} --version ${removeSpaces(form.version)} --privatekey ${removeSpaces(
+      form.privatekey
+    )} --robot ${form.robot}`;
 
     // 执行命令
     loading.value = true;
-    executionResult.value += "\n正在执行发布命令...";
+    executionResult.value += "\n正在执行发版命令...";
     executionResult.value += "\n" + command;
 
     try {
@@ -273,17 +368,121 @@ const submitWx = async (isClearResult: boolean) => {
   });
 };
 
-// 提交表单
-const submitForm = async () => {
+/**
+ * 构建测试版本
+ */
+const buildTest = async () => {
+  if (!formRef.value) return;
+
+  await formRef.value.validate(async (valid) => {
+    if (!valid) {
+      executionResult.value = "\n表单验证失败";
+      return;
+    }
+
+    mergeToTest(true);
+  });
+};
+
+/**
+ * 构建生产版本
+ */
+const buildProd = async () => {
   if (!formRef.value) return;
 
   formRef.value.validate(async (valid) => {
     if (!valid) {
-      executionResult.value += "\n表单验证失败";
+      executionResult.value = "\n表单验证失败";
       return;
     }
-    submitWx(true);
+
+    if (CurrentBranch.value !== form.prodBranchName) {
+      executionResult.value += "\n当前分支不是生产分支，不能构建生产版本";
+      return;
+    }
+    ci_upload(true);
   });
+};
+
+/**
+ * 合并当前分支到测试分支
+ * @param isCiUpload 是否在test分支上执行微信小程序CI上传
+ */
+const mergeToTest = async (isCiUpload: boolean) => {
+  if (!form.path) {
+    executionResult.value = "\n请选择工程目录";
+    return;
+  }
+
+  if (!form.testBranchName) {
+    executionResult.value = "\n请输入测试分支名称";
+    return;
+  }
+
+  loading.value = true;
+  executionResult.value = "正在执行命令...\n";
+
+  try {
+    let status = "";
+
+    status = await executeCommand(form.path, `git status --porcelain`);
+    if (status !== "") {
+      executionResult.value += "\n当前分支有未提交的文件，请先提交";
+      return;
+    }
+
+    executionResult.value += `\n***准备将${CurrentBranch.value}合并到test分支...`;
+
+    executionResult.value += "\n***拉取当前分支代码...\n";
+    executionResult.value += await executeCommand(
+      form.path,
+      `git pull origin ${CurrentBranch.value}`
+    );
+    executionResult.value += "***已拉取\n";
+
+    executionResult.value += "\n***推送本地到当前远程分支...\n";
+    executionResult.value += await executeCommand(
+      form.path,
+      `git pull origin ${CurrentBranch.value}`
+    );
+    executionResult.value += "***已推送\n";
+
+    executionResult.value += "\n***切换到test分支...\n";
+    executionResult.value += await executeCommand(form.path, `git checkout test`);
+    executionResult.value += "***已切换\n";
+
+    executionResult.value += "\n***在test分支拉取最新代码...\n";
+    executionResult.value += await executeCommand(form.path, `git pull origin test`);
+    executionResult.value += "***已拉取\n";
+
+    executionResult.value += `\n***正在合并${CurrentBranch.value}到test...\n`;
+    executionResult.value += await executeCommand(
+      form.path,
+      `git merge ${CurrentBranch.value}`
+    );
+    executionResult.value += "***已合并\n";
+
+    executionResult.value += "\n***推送本地更改到远程test分支...\n";
+    executionResult.value += await executeCommand(form.path, `git push origin test`);
+    executionResult.value += "***已推送\n";
+
+    if (isCiUpload) {
+      executionResult.value += "\n***在test分支上提交体验版\n";
+      await ci_upload(false);
+      executionResult.value += "\n***已提交\n";
+    }
+
+    executionResult.value += `\n***合并成功！切换回原 ${CurrentBranch.value} 分支\n`;
+    executionResult.value += await executeCommand(
+      form.path,
+      `git checkout ${CurrentBranch.value}`
+    );
+    executionResult.value += "***已切换\n";
+  } catch (error: any) {
+    executionResult.value += `\n执行失败: 请检查是否发生文件冲突！！！\n`;
+  } finally {
+    loading.value = false;
+  }
 };
 
 // 重置表单
@@ -295,6 +494,9 @@ const resetForm = (e?: any) => {
   form.appid = e;
 };
 
+/**
+ * 清空执行结果
+ */
 const clearResult = () => {
   executionResult.value = "";
 };
@@ -313,6 +515,7 @@ const selectDirectory = async () => {
       }
 
       getCurrentBranch();
+      getBranchList();
     }
   } catch (error) {
     console.error("选择目录失败:", error);
@@ -333,9 +536,21 @@ const selectPrivateKeyFile = async () => {
 
 /* 获取当前分支名称 */
 const getCurrentBranch = async () => {
-  await window.electronAPI.executeCommand(`cd ${form.path} && git rev-parse --abbrev-ref HEAD`, (data) => {
-    data = data.replace("\n", "");
-    CurrentBranch.value = data;
+  await window.electronAPI.executeCommand(
+    `cd ${form.path} && git rev-parse --abbrev-ref HEAD`,
+    (data) => {
+      data = data.replace("\n", "");
+      CurrentBranch.value = data;
+      console.log("当前分支:", data);
+    }
+  );
+};
+
+/** 获取当前仓库的分支列表 */
+const getBranchList = async () => {
+  await window.electronAPI.executeCommand(`cd ${form.path} && git branch`, (data) => {
+    // '  dayuan\n  liu-master\n  master\n  test\n  uat-master\n  v2.3.1\n  v2.4.0\n  v2.5.0\n* v2.6.0数据脱敏\n'
+    //未实现
   });
 };
 

@@ -13,9 +13,9 @@
 
 注意事项：
 
-- 必需设置 HBuilder X 环境变量([点击跳转](https://hx.dcloud.net.cn/cli/env))
+- HBuilder X 必需设置环境变量([点击跳转](https://hx.dcloud.net.cn/cli/env))
 
-- 必需 HBuilder X 同时运行,才能使用它的 cli.exe 程序，让该工具正常使用
+- HBuilder X 必需和本工具同时运行,才能使用它的 cli.exe 程序，让该工具正常使用
 
 - HBuilder X 必须已安装 weapp-miniprogram-ci 插件。([点击跳转](https://ext.dcloud.net.cn/plugin?name=weapp-miniprogram-ci))
 
@@ -23,10 +23,13 @@
 
 - 必须有安装 git,并且配置好环境变量([点击跳转](https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git))
 
-- 运行期间不要操作 git 仓库!!!
+- 获取小程序上传密钥。如果你的公网出口 ip 是固定的，可开启并配置。否则关闭白名单([点击跳转](https://hx.dcloud.net.cn/cli/publish-mp-weixin?id=uploadprivatekey))
 
-- 有冲突了，需要先解决冲突!!!,然后手动回到原分支
+- 完成以上配置即可开始使用
 
-- 目前仅支持 HBuilder 项目上传微信小程序
+- 目前仅支持使用 HBuilder 所开发的 uni-app 项目上传微信小程序
+
+`运行期间不要操作 git 仓库!!!`
+`有冲突了，需要先解决冲突!!!,然后手动回到原分支`
 
 <img src="view.png" alt="view.png" />
